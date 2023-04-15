@@ -88,4 +88,17 @@ get_time_stats <- function(player_name){
                          "average minutes played" = round((time %>% seconds() %>% mean())/60,1)))
 }
 
+get_periods_stats <- function(){
+    period_data <- data %>% select(points1_opponent:points4_pandas, game) %>% 
+        unique() %>% 
+        pivot_longer(names_to="key", values_to="points", points1_opponent:points4_pandas) %>% 
+        mutate(team=substr(key, 9, 20)) %>% mutate(period=substr(key, 7, 7)) %>% select(-key) %>% 
+        group_by(team, period) %>% 
+        summarise("mean" = mean(points), 
+                  "lower"=quantile(points, 0.1), 
+                  "upper"=quantile(points, 0.9), .groups = "keep")
+    
+    return(period_data)
+}
+
 

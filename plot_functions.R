@@ -25,5 +25,18 @@ plot_game_points <- function(game_date, color){
         labs(title=plot_data$opponent[1], x="", y="Points")
 }
 
+plot_periods_boxplot <- function(){
+    plot_data <- data %>% select(points1_opponent:points4_pandas, game) %>% 
+        unique() %>% 
+        pivot_longer(names_to="key", values_to="points", points1_opponent:points4_pandas) %>% 
+        mutate(team=substr(key, 9, 20)) %>% mutate(period=substr(key, 7, 7)) %>% select(-key)
+    
+    p <- plot_data %>% ggplot(aes(x=period, y=points, fill=team)) + 
+        geom_boxplot(alpha=0.7) + scale_fill_manual(values=c("indianred3", "dodgerblue")) +
+        labs(x="Period", y="Points", fill="")
+    
+    return(p)
+}
+
 
 
